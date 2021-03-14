@@ -9,13 +9,33 @@ import java.util.ArrayList;
 
 public class Mastermind {
 
+    private String[] pastGuesses;
+    int pastGuessCounter = 0;
     private ArrayList<User> users = new ArrayList<User>();
-    private String[] colors = new String[4];
-    private String[] guess = new String[4];
+    private String[] colors;
+    private String[] guess;
     private String[] availableColors = {"Red", "Blue", "Green", "Yellow", "Black", "White"};
     private String[] indicators = {"Black", "White"};
     private int tries = 0;
     Scanner scanner = new Scanner(System.in);
+
+    public Mastermind() {
+        pastGuesses = new String[10];
+        colors = new String[4];
+        guess = new String[4];
+    }
+
+    public Mastermind(int numPastGuesses, int numColors, int numGuesses) {
+        pastGuesses = new String[numPastGuesses];
+        colors = new String[numColors];
+        guess = new String[numGuesses];
+    }
+
+    public void getGuessHistory() {
+        for (int i = 0; i < pastGuesses.length; i++) {
+            System.out.println(pastGuesses[i]);
+        }
+    }
 
     public void chooseRandomColors() {
         for (int i = 0; i < colors.length; i++) {
@@ -125,19 +145,29 @@ public class Mastermind {
                 guess[i] = "Green";
             }
         }
+
+        String s = "";
         for (int i = 0; i < guess.length; i++) {
-            System.out.print(guess[i]);
+            s += guess[i];
             if (i < guess.length - 1) {
-                System.out.print(", ");
+                s += ", ";
             }
         }
+        System.out.println(s);
+
+        pastGuesses[pastGuessCounter] = s;
+        if (pastGuessCounter < pastGuesses.length-1) {
+            pastGuessCounter++;
+        }
         System.out.println();
+
         for (int i = 0; i < colors.length; i++) {
             if (guess[i] == null) {
                 System.out.println("You did not input valid values. Try again.\n");
                 setGuess();
             }
         }
+
         System.out.println();
     }
 
@@ -158,6 +188,8 @@ public class Mastermind {
             }
             else {
                 markIndicators();
+                getGuessHistory();
+                setGuess();
             }
         }
     }
@@ -213,7 +245,7 @@ public class Mastermind {
 
     // In development
     public void markIndicators() {
-        int all = 0, colorRight = 0, none;
+        int all = 0, colorRight = 0, none = 0;
         int colorsPos = 0, guessPos = 0;
         for (int i = 0; i < colors.length; i++) {
 
@@ -238,16 +270,15 @@ public class Mastermind {
         // Index check
         for (int i = 0; i < colors.length; i++) {
             for (int j = 0; j < guess.length; j++) {
-                if (colors[i].equals(colors[j])) {
+                if (colors[i].equals(guess[j])) {
                     System.out.println(i + ", " + j);
                 }
             }
         }
 
-        none = colors.length - (colorRight + all); // In development
         System.out.println("Color and position right: " + all);
         System.out.println("Color right but incorrect position: " + colorRight);
-        System.out.println("Neither of these: " + none);
+        System.out.println("Neither of these: "); // In development
     }
 
     public void showAvailableColors() {
@@ -265,9 +296,7 @@ public class Mastermind {
         System.out.println("Developed by: Clement Boiteux on February 28, 2021");
         System.out.println("Language: Java");
         System.out.println("Inspired by the Mastermind game\n");
-        System.out.println("Type and enter any key to return to the main menu."); // Will reimplement this with KeyListener once I know how to do it
-        scanner.next();
-        showMenu();
+        redirect();
     }
 
     public void showTutorial() {
@@ -276,6 +305,10 @@ public class Mastermind {
         System.out.println("After you make your first guess, the codemaker will use indicators to mark if a color was correct, if a color and its position in the code was correct, or neither. A white indicator means that a color was correct but not in the right position. A black indicator will indicate that both a token's color and position is correct. If neither are these are true, then one of the indicators will be blank. The indicators do not point at specific tokens.");
         System.out.println("Using this information, the codemaker must use different colors and find patterns with previous guesses to solve the code.");
         System.out.println("Once the code has been solved, the codemaker will reveal the code and the game ends.\n");
+        redirect();
+    }
+
+    public void redirect() {
         System.out.println("Type and enter any key to return to the main menu."); // Will reimplement this with KeyListener once I know how to do it
         scanner.next();
         showMenu();
@@ -284,9 +317,7 @@ public class Mastermind {
     public void aboutMe() {
         System.out.println("Hi! I am Clement Boiteux. I am currently a sophomore in high school. My most favorite subject is math, but I also enjoy any subject that uses a lot of math. I plan to pursue engineering, programming, or finance/economics in the future.");
         System.out.println("Programming Experience: I took AP Computer Science A in my sophomore year of high school and joined Programming Club. I participated in two hackathons so far and programmed in HTML/CSS for both. I actively program in Java and HTML/CSS. I have a little bit of experience with JavaScript, Python, and C++ but don't actively program in these languages.\n");
-        System.out.println("Type and enter any key to return to the main menu."); // Will reimplement this with KeyListener once I know how to do it
-        scanner.next();
-        showMenu();
+        redirect();
     }
 
     public void showMenu() {

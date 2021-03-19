@@ -281,7 +281,6 @@ public class Mastermind {
         System.out.println("Neither of these: "); // In development
     }
 
-
     public void showAvailableColors() {
         System.out.println("Possible colors:");
         for (int i = 0; i < availableColors.length; i++) {

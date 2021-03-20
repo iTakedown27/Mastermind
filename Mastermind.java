@@ -34,7 +34,7 @@ public class Mastermind {
     public void getGuessHistory() {
         for (int i = 0; i < pastGuesses.length; i++) {
             for (int j = 0; j < pastGuesses[i].length; i++) {
-                System.out.println(pastGuesses[i][j]);
+                System.out.print(pastGuesses[i][j] + " ");
             }
         }
     }
@@ -177,7 +177,6 @@ public class Mastermind {
                 setGuess();
             }
         }
-
         System.out.println();
     }
 

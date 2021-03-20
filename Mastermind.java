@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class Mastermind {
 
-    private String[] pastGuesses;
-    int pastGuessCounter = 0;
+    private String[][] pastGuesses;
+    int pastGuessRow = 0, pastGuessCol = 0;
     private ArrayList<User> users = new ArrayList<User>();
     private String[] colors;
     private String[] guess;
@@ -20,20 +20,22 @@ public class Mastermind {
     Scanner scanner = new Scanner(System.in);
 
     public Mastermind() {
-        pastGuesses = new String[10];
+        pastGuesses = new String[10][4];
         colors = new String[4];
         guess = new String[4];
     }
 
     public Mastermind(int numPastGuesses, int numColors, int numGuesses) {
-        pastGuesses = new String[numPastGuesses];
+        pastGuesses = new String[numPastGuesses][4];
         colors = new String[numColors];
         guess = new String[numGuesses];
     }
 
     public void getGuessHistory() {
         for (int i = 0; i < pastGuesses.length; i++) {
-            System.out.println(pastGuesses[i]);
+            for (int j = 0; j < pastGuesses[i].length; i++) {
+                System.out.println(pastGuesses[i][j]);
+            }
         }
     }
 
@@ -155,10 +157,18 @@ public class Mastermind {
         }
         System.out.println(s);
 
-        pastGuesses[pastGuessCounter] = s;
-        if (pastGuessCounter < pastGuesses.length-1) {
-            pastGuessCounter++;
+        for (int i = 0; i < pastGuesses[0].length; i++) {
+            pastGuesses[pastGuessRow][i] = guess[i];
         }
+
+        if (pastGuessRow < pastGuesses.length-1) {
+            pastGuessRow++;
+        }
+        else if (pastGuessRow == pastGuesses.length-1) {
+            pastGuessCol++;
+            pastGuessRow = 0;
+        }
+
         System.out.println();
 
         for (int i = 0; i < colors.length; i++) {
@@ -252,21 +262,19 @@ public class Mastermind {
             if (colors[i].equals(guess[i])) {
                 all++;
             }
-
-
-            /*
+        }
+            
+        for (int i = 0; i < colors.length; i++) {
             for (int j = 0; j < guess.length; j++) {
-                if (colors[i].equals(guess[j]) && (i == j)) {
-                    all++;
-                }
-                else if (colors[i].equals(guess[j]) && !(i == j)) {
+                if (colors[i].equals(guess[j])) {
                     colorRight++;
                 }
                 else if (!(colors[i].equals(guess[j])) && !(i == j)) {
-                    break;
+                    none++;
                 }
-            } */
-        }
+            }                
+        } 
+        
         // Index check
         for (int i = 0; i < colors.length; i++) {
             for (int j = 0; j < guess.length; j++) {
@@ -276,9 +284,15 @@ public class Mastermind {
             }
         }
 
-        System.out.println("Color and position right: " + all);
-        System.out.println("Color right but incorrect position: " + colorRight);
-        System.out.println("Neither of these: "); // In development
+        if (all + colorRight + none == 4) {
+            System.out.println("Color and position right: " + all);
+            System.out.println("Color right but incorrect position: " + colorRight);
+            System.out.println("Neither of these: "); // In development
+        }
+        else {
+            System.out.println("An error occurred. The total amount of tokens does not sum up to 4.");
+        }
+        
     }
 
     public void showAvailableColors() {

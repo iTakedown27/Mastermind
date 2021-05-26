@@ -4,52 +4,30 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 /*
-* Developed and programmed by Clement Boiteux
-* Project started on 2/28/2021
-* Future updates: Implement a GUI, new gamemodes and features, audio, settings, com.com.Mastermind.Mastermind.User Login
-*/
+ * Developed and programmed by Clement Boiteux
+ * Project started on 2/28/2021
+ * Future updates: Implement a GUI, new gamemodes and features, audio, settings, com.src.game.User Login
+ */
 
 public class Mastermind {
 
-    private String[][] pastGuesses;
-    int pastGuessRow = 0, pastGuessCol = 0;
-    private ArrayList<User> users = new ArrayList<User>();
-    private String[] colors;
-    private String[] guess;
+    private ArrayList<User> users = new ArrayList();
+    private Token[] tokens = new Token[4];
+    private Token[] guess = new Token[4];
     private String[] availableColors = {"Red", "Blue", "Green", "Yellow", "Black", "White"};
-    private String[] indicators = {"Black", "White"};
+    private String[] indicators = new String[4];
     private int tries = 0;
     Scanner scanner = new Scanner(System.in);
 
-    public Mastermind() {
-        pastGuesses = new String[10][4];
-        colors = new String[4];
-        guess = new String[4];
-    }
-
-    public Mastermind(int numPastGuesses, int numColors, int numGuesses) {
-        pastGuesses = new String[numPastGuesses][4];
-        colors = new String[numColors];
-        guess = new String[numGuesses];
-    }
-
-    public void getGuessHistory() {
-        for (int i = 0; i < pastGuesses.length; i++) {
-            for (int j = 0; j < pastGuesses[i].length; i++) {
-                System.out.print(pastGuesses[i][j] + " ");
-            }
-        }
-    }
-
     public void chooseRandomColors() {
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = availableColors[(int) (Math.random()*availableColors.length)];
+        for (int i = 0; i < tokens.length; i++) {
+            tokens[i] = new Token(availableColors[(int) (Math.random() * availableColors.length)], i);
         }
     }
 
     public void revealColors() {
-        for (int i = 0; i < colors.length; i++) {
-            System.out.println(colors[i]);
+        for (int i = 0; i < tokens.length; i++) {
+            System.out.println(tokens[i]);
         } // Cheat code
         System.out.println();
     }
@@ -67,31 +45,26 @@ public class Mastermind {
     public void selectColors() {
         showAvailableColors();
         System.out.println("Please choose your 4 colors: ");
-        for (int i = 0; i < colors.length; i++) {
+        for (int i = 0; i < tokens.length; i++) {
             System.out.println("Color #" + (i + 1) + ":");
             String color = scanner.next();
             if (color.equalsIgnoreCase("red")) {
-                colors[i] = "Red";
-            }
-            else if (color.equalsIgnoreCase("blue")) {
-                colors[i] = "Blue";
-            }
-            else if (color.equalsIgnoreCase("yellow")) {
-                colors[i] = "Yellow";
-            }
-            else if (color.equalsIgnoreCase("black")) {
-                colors[i] = "Black";
-            }
-            else if (color.equalsIgnoreCase("white")) {
-                colors[i] = "White";
-            }
-            else if (color.equalsIgnoreCase("green")) {
-                colors[i] = "Green";
+                tokens[i] = new Token("Red", i);
+            } else if (color.equalsIgnoreCase("blue")) {
+                tokens[i] = new Token("Blue", i);
+            } else if (color.equalsIgnoreCase("yellow")) {
+                tokens[i] = new Token("Yellow", i);
+            } else if (color.equalsIgnoreCase("black")) {
+                tokens[i] = new Token("Black", i);
+            } else if (color.equalsIgnoreCase("white")) {
+                tokens[i] = new Token("White", i);
+            } else if (color.equalsIgnoreCase("green")) {
+                tokens[i] = new Token("Green", i);
             }
         }
         System.out.println();
-        for (int i = 0; i < colors.length; i++) {
-            if (colors[i] == null) {
+        for (int i = 0; i < tokens.length; i++) {
+            if (tokens[i] == null) {
                 System.out.println("You did not input valid values. Try again.\n");
                 selectColors();
             }
@@ -106,11 +79,9 @@ public class Mastermind {
         int choice = scanner.nextInt();
         if (choice == 1) {
             selectColors();
-        }
-        else if (choice == 2) {
+        } else if (choice == 2) {
             chooseRandomColors();
-        }
-        else {
+        } else {
             System.out.println("Invalid option. Select an option again.");
             isOptionValid = false;
             startGame();
@@ -131,49 +102,27 @@ public class Mastermind {
             System.out.println("Color #" + (i + 1) + ":");
             String color = scanner.next();
             if (color.equalsIgnoreCase("red")) {
-                guess[i] = "Red";
-            }
-            else if (color.equalsIgnoreCase("blue")) {
-                guess[i] = "Blue";
-            }
-            else if (color.equalsIgnoreCase("yellow")) {
-                guess[i] = "Yellow";
-            }
-            else if (color.equalsIgnoreCase("black")) {
-                guess[i] = "Black";
-            }
-            else if (color.equalsIgnoreCase("white")) {
-                guess[i] = "White";
-            }
-            else if (color.equalsIgnoreCase("green")) {
-                guess[i] = "Green";
+                guess[i] = new Token("Red", i);
+            } else if (color.equalsIgnoreCase("blue")) {
+                guess[i] = new Token("Blue", i);
+            } else if (color.equalsIgnoreCase("yellow")) {
+                guess[i] = new Token("Yellow", i);
+            } else if (color.equalsIgnoreCase("black")) {
+                guess[i] = new Token("Black", i);
+            } else if (color.equalsIgnoreCase("white")) {
+                guess[i] = new Token("White", i);
+            } else if (color.equalsIgnoreCase("green")) {
+                guess[i] = new Token("Green", i);
             }
         }
-
-        String s = "";
         for (int i = 0; i < guess.length; i++) {
-            s += guess[i];
+            System.out.print(guess[i]);
             if (i < guess.length - 1) {
-                s += ", ";
+                System.out.print(", ");
             }
         }
-        System.out.println(s);
-
-        for (int i = 0; i < pastGuesses[0].length; i++) {
-            pastGuesses[pastGuessRow][i] = guess[i];
-        }
-
-        if (pastGuessRow < pastGuesses.length-1) {
-            pastGuessRow++;
-        }
-        else if (pastGuessRow == pastGuesses.length-1) {
-            pastGuessCol++;
-            pastGuessRow = 0;
-        }
-
         System.out.println();
-
-        for (int i = 0; i < colors.length; i++) {
+        for (int i = 0; i < guess.length; i++) {
             if (guess[i] == null) {
                 System.out.println("You did not input valid values. Try again.\n");
                 setGuess();
@@ -184,24 +133,18 @@ public class Mastermind {
 
     public void checkEquivalency() {
         boolean isEquivalent = false;
-        if (colors.length == guess.length) { // Should not be a problem, array length doesn't magically change
-            for (int i = 0; i < colors.length; i++) {
-                if (colors[i].equals(guess[i])) {
-                    isEquivalent = true;
-                }
-                else if (!colors[i].equals(guess[i])) {
-                    isEquivalent = false;
-                    break;
-                }
+        for (int i = 0; i < tokens.length; i++) {
+            if (tokens[i].equals(guess[i])) {
+                isEquivalent = true;
+            } else if (!tokens[i].equals(guess[i])) {
+                isEquivalent = false;
+                break;
             }
-            if (isEquivalent) {
-                endMenu();
-            }
-            else {
-                markIndicators();
-                getGuessHistory();
-                setGuess();
-            }
+        }
+        if (isEquivalent) {
+            endMenu();
+        } else {
+            markIndicators();
         }
     }
 
@@ -217,14 +160,11 @@ public class Mastermind {
             System.out.println("Date completed ([month]/[day]/[year] format)");
             String date = scanner.next();
             users.add(new User(name, date, tries));
-        }
-        else if (choice == 2) {
+        } else if (choice == 2) {
             startGame();
-        }
-        else if (choice == 3) {
+        } else if (choice == 3) {
             System.out.println("Have a nice day! Thank you for playing!");
-        }
-        else {
+        } else {
             System.out.println("Invalid option. Please enter again.");
             endMenu();
         }
@@ -243,12 +183,10 @@ public class Mastermind {
         int choice = scanner.nextInt();
         if (choice == 1) {
             showMenu();
-        }
-        else if (choice == 2) {
+        } else if (choice == 2) {
             resetHighScores();
             showMenu();
-        }
-        else {
+        } else {
             System.out.println("Invalid option. Please enter again.");
             printUserList();
         }
@@ -256,44 +194,12 @@ public class Mastermind {
 
     // In development
     public void markIndicators() {
-        int all = 0, colorRight = 0, none = 0;
-        int colorsPos = 0, guessPos = 0;
-        for (int i = 0; i < colors.length; i++) {
+        int tokenCount = 0, all = 0, inPos = 0, none = 0;
+        for (int i = 0; i < tokens.length-1; i++) {
+            for (int j = i + 1; j < tokens.length; j++) {
 
-            if (colors[i].equals(guess[i])) {
-                all++;
             }
         }
-            
-        for (int i = 0; i < colors.length; i++) {
-            for (int j = 0; j < guess.length; j++) {
-                if (colors[i].equals(guess[j])) {
-                    colorRight++;
-                }
-                else if (!(colors[i].equals(guess[j])) && !(i == j)) {
-                    none++;
-                }
-            }                
-        } 
-        
-        // Index check
-        for (int i = 0; i < colors.length; i++) {
-            for (int j = 0; j < guess.length; j++) {
-                if (colors[i].equals(guess[j])) {
-                    System.out.println(i + ", " + j);
-                }
-            }
-        }
-
-        if (all + colorRight + none == 4) {
-            System.out.println("Color and position right: " + all);
-            System.out.println("Color right but incorrect position: " + colorRight);
-            System.out.println("Neither of these: "); // In development
-        }
-        else {
-            System.out.println("An error occurred. The total amount of tokens does not sum up to 4.");
-        }
-        
     }
 
     public void showAvailableColors() {
@@ -310,20 +216,18 @@ public class Mastermind {
     public void showCredits() {
         System.out.println("Developed by: Clement Boiteux on February 28, 2021");
         System.out.println("Language: Java");
-        System.out.println("Inspired by the com.Mastermind.Mastermind game\n");
-        redirect();
+        System.out.println("Inspired by the Mastermind game\n");
+        System.out.println("Type and enter any key to return to the main menu."); // Will reimplement this with KeyListener once I know how to do it
+        scanner.next();
+        showMenu();
     }
 
     public void showTutorial() {
-        System.out.println("com.Mastermind.Mastermind is a game intended for 2 players. One player will assume the role of the codemaker and creates the code using 4 colored tokens. After the code has been made, the other player will assume the role of the codebreaker and will try to guess the code."); // In development
+        System.out.println("Mastermind is a game intended for 2 players. One player will assume the role of the codemaker and creates the code using 4 colored tokens. After the code has been made, the other player will assume the role of the codebreaker and will try to guess the code."); // In development
         System.out.println("There are six colors to choose from: Red, Blue, Green, Yellow, White, and Black. You can select four tokens of any color to try to determine the code. Doubling colors is allowed.");
         System.out.println("After you make your first guess, the codemaker will use indicators to mark if a color was correct, if a color and its position in the code was correct, or neither. A white indicator means that a color was correct but not in the right position. A black indicator will indicate that both a token's color and position is correct. If neither are these are true, then one of the indicators will be blank. The indicators do not point at specific tokens.");
         System.out.println("Using this information, the codemaker must use different colors and find patterns with previous guesses to solve the code.");
         System.out.println("Once the code has been solved, the codemaker will reveal the code and the game ends.\n");
-        redirect();
-    }
-
-    public void redirect() {
         System.out.println("Type and enter any key to return to the main menu."); // Will reimplement this with KeyListener once I know how to do it
         scanner.next();
         showMenu();
@@ -332,11 +236,13 @@ public class Mastermind {
     public void aboutMe() {
         System.out.println("Hi! I am Clement Boiteux. I am currently a sophomore in high school. My most favorite subject is math, but I also enjoy any subject that uses a lot of math. I plan to pursue engineering, programming, or finance/economics in the future.");
         System.out.println("Programming Experience: I took AP Computer Science A in my sophomore year of high school and joined Programming Club. I participated in two hackathons so far and programmed in HTML/CSS for both. I actively program in Java and HTML/CSS. I have a little bit of experience with JavaScript, Python, and C++ but don't actively program in these languages.\n");
-        redirect();
+        System.out.println("Type and enter any key to return to the main menu."); // Will reimplement this with KeyListener once I know how to do it
+        scanner.next();
+        showMenu();
     }
 
     public void showMenu() {
-        System.out.println("Welcome to Clement's com.Mastermind.Mastermind program!");
+        System.out.println("Welcome to Clement's Mastermind program!");
         System.out.println("Select an option:");
         System.out.println("1. New Game");
         System.out.println("2. Credits");
@@ -348,23 +254,17 @@ public class Mastermind {
 
         if (choice == 1) {
             startGame();
-        }
-        else if (choice == 2) {
+        } else if (choice == 2) {
             showCredits();
-        }
-        else if (choice == 3) {
+        } else if (choice == 3) {
             showTutorial();
-        }
-        else if (choice == 4) {
+        } else if (choice == 4) {
             aboutMe();
-        }
-        else if (choice == 5) {
+        } else if (choice == 5) {
             printUserList();
-        }
-        else if (choice == 6) {
+        } else if (choice == 6) {
             System.out.println("Have a nice day! Thank you for playing!");
-        }
-        else {
+        } else {
             System.out.println("Invalid option. Please enter again.");
             showMenu();
         }

@@ -1,21 +1,21 @@
 package com.Mastermind;
 
-import java.util.Scanner;
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.*;
 
 /*
  * Developed and programmed by Clement Boiteux
  * Project started on 2/28/2021
- * Future updates: Implement a GUI, new gamemodes and features, audio, settings, com.src.game.User Login
+ * Future updates: Implement a GUI, new gamemodes and features
  */
 
 public class Mastermind {
 
-    private ArrayList<User> users = new ArrayList();
     private Token[] tokens = new Token[4];
     private Token[] guess = new Token[4];
-    private String[] availableColors = {"Red", "Blue", "Green", "Yellow", "Black", "White"};
-    private String[] indicators = new String[4];
+    private final String[] availableColors = {"Red", "Blue", "Green", "Yellow", "Black", "White"};
+    private ArrayList<String> indicators = new ArrayList();
     private int tries = 0;
     Scanner scanner = new Scanner(System.in);
 
@@ -26,25 +26,15 @@ public class Mastermind {
     }
 
     public void revealColors() {
-        for (int i = 0; i < tokens.length; i++) {
-            System.out.println(tokens[i]);
+        for (Token token : tokens) {
+            System.out.println(token);
         } // Cheat code
         System.out.println();
     }
 
-    public void resetHighScores() {
-        for (int i = 0; i < users.size(); i++) {
-            users.remove(i);
-            i--;
-        }
-        if (users.isEmpty()) {
-            System.out.println("High scores list has been reset!\n");
-        }
-    }
-
     public void selectColors() {
         showAvailableColors();
-        System.out.println("Please choose your 4 colors: ");
+        System.out.println("Please choose your " + tokens.length + " colors: ");
         for (int i = 0; i < tokens.length; i++) {
             System.out.println("Color #" + (i + 1) + ":");
             String color = scanner.next();
@@ -63,8 +53,8 @@ public class Mastermind {
             }
         }
         System.out.println();
-        for (int i = 0; i < tokens.length; i++) {
-            if (tokens[i] == null) {
+        for (Token token : tokens) {
+            if (token == null) {
                 System.out.println("You did not input valid values. Try again.\n");
                 selectColors();
             }
@@ -122,8 +112,8 @@ public class Mastermind {
             }
         }
         System.out.println();
-        for (int i = 0; i < guess.length; i++) {
-            if (guess[i] == null) {
+        for (Token token : guess) {
+            if (token == null) {
                 System.out.println("You did not input valid values. Try again.\n");
                 setGuess();
             }
@@ -150,56 +140,71 @@ public class Mastermind {
 
     public void endMenu() {
         System.out.println("Good job! You have solved the code! Would you like to: ");
-        System.out.println("1. Be featured on the high scores list");
-        System.out.println("2. Play again");
-        System.out.println("3. Quit game");
+        System.out.println("1. Play again");
+        System.out.println("2. Quit game");
         int choice = scanner.nextInt();
         if (choice == 1) {
-            System.out.println("First Name:");
-            String name = scanner.next();
-            System.out.println("Date completed ([month]/[day]/[year] format)");
-            String date = scanner.next();
-            users.add(new User(name, date, tries));
-        } else if (choice == 2) {
             startGame();
-        } else if (choice == 3) {
-            System.out.println("Have a nice day! Thank you for playing!");
+        } else if (choice == 2) {
+            System.out.println("Have a nice day! Thanks for playing!");
         } else {
             System.out.println("Invalid option. Please enter again.");
             endMenu();
         }
     }
 
-    public void printUserList() {
-        for (int i = 0; i < users.size(); i++) {
-            System.out.println(users.get(i));
-        }
-        if (users.isEmpty()) {
-            System.out.println("Either no one has played the game yet or high scores have been cleared.\n");
-        }
-        System.out.println("Would you like to:");
-        System.out.println("1. Return to Main Menu");
-        System.out.println("2. Reset high scores");
-        int choice = scanner.nextInt();
-        if (choice == 1) {
-            showMenu();
-        } else if (choice == 2) {
-            resetHighScores();
-            showMenu();
-        } else {
-            System.out.println("Invalid option. Please enter again.");
-            printUserList();
-        }
-    }
 
     // In development
-    public void markIndicators() {
-        int tokenCount = 0, all = 0, inPos = 0, none = 0;
-        for (int i = 0; i < tokens.length-1; i++) {
-            for (int j = i + 1; j < tokens.length; j++) {
+    public ArrayList<String> markIndicators() {
+//      boolean realIsDouble = false, guessIsDouble = false, realIsTriple = false, guessIsTriple = false, realIsQuadruple = false, guessIsQuadruple = false;
+        ArrayList<Integer> iIndices = new ArrayList();
+        ArrayList<Integer> jIndices = new ArrayList();
 
+        int all = 0, colorRight = 0, none = 0;
+        for (int i = 0; i < tokens.length; i++) {
+            for (int j = i; j < guess.length; j++) {
+                Token real = tokens[i], guessed = guess[j];
+                if (real.equals(guessed)) {
+                    all++;
+                }
             }
         }
+
+        for (int i = 0; i < iIndices.size(); i++) {
+            System.out.print(iIndices.get(i) + " ");
+            System.out.print(jIndices.get(i));
+            System.out.println();
+        }
+
+//        for (int i = 0; i < iIndices.size(); i++) {
+//            for (int j = 1; j < iIndices.size(); j++) {
+//                if (iIndices.get(i) == iIndices.get(j)) {
+//                    realIsDouble = true;
+//                }
+//
+//                if (iIndices.get(i) == iIndices.get(j) && realIsDouble) {
+//                    realIsTriple = true;
+//                    realIsDouble = false;
+//                }
+//
+//                if (iIndices.get(i) == iIndices.get(j) && realIsTriple) {
+//                    realIsQuadruple = true;
+//                    realIsTriple = false;
+//                }
+//            }
+//        }
+
+//        if (realIsDouble) {
+//            for (int i = 0; i < 4; i++)
+//        } else if (realIsTriple) {
+//
+//        } else if (realIsQuadruple) {
+//
+//        } else {
+//
+//        }
+
+        return indicators;
     }
 
     public void showAvailableColors() {
@@ -233,13 +238,6 @@ public class Mastermind {
         showMenu();
     }
 
-    public void aboutMe() {
-        System.out.println("Hi! I am Clement Boiteux. I am currently a sophomore in high school. My most favorite subject is math, but I also enjoy any subject that uses a lot of math. I plan to pursue engineering, programming, or finance/economics in the future.");
-        System.out.println("Programming Experience: I took AP Computer Science A in my sophomore year of high school and joined Programming Club. I participated in two hackathons so far and programmed in HTML/CSS for both. I actively program in Java and HTML/CSS. I have a little bit of experience with JavaScript, Python, and C++ but don't actively program in these languages.\n");
-        System.out.println("Type and enter any key to return to the main menu."); // Will reimplement this with KeyListener once I know how to do it
-        scanner.next();
-        showMenu();
-    }
 
     public void showMenu() {
         System.out.println("Welcome to Clement's Mastermind program!");
@@ -247,9 +245,7 @@ public class Mastermind {
         System.out.println("1. New Game");
         System.out.println("2. Credits");
         System.out.println("3. How to Play");
-        System.out.println("4. About the developer");
-        System.out.println("5. High scores");
-        System.out.println("6. Exit");
+        System.out.println("4. Exit");
         int choice = scanner.nextInt();
 
         if (choice == 1) {
@@ -259,11 +255,7 @@ public class Mastermind {
         } else if (choice == 3) {
             showTutorial();
         } else if (choice == 4) {
-            aboutMe();
-        } else if (choice == 5) {
-            printUserList();
-        } else if (choice == 6) {
-            System.out.println("Have a nice day! Thank you for playing!");
+            System.out.println("Have a nice day! Thanks for playing :)");
         } else {
             System.out.println("Invalid option. Please enter again.");
             showMenu();
